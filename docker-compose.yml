@@ -1,0 +1,63 @@
+version: '3'
+services:
+  cassandra-node-1:
+    hostname: cassandra-1
+    image: cassandra:latest
+    command: /bin/bash -c "sleep 1 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
+    expose:
+      - 7000
+      - 7001
+      - 7199
+      - 9042
+      - 9160
+  cassandra-node-2:
+    hostname: cassandra-2
+    image: cassandra:latest
+    command: /bin/bash -c "sleep 30 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
+    links:
+      - cassandra-node-1:cassandra
+    expose:
+      - 7000
+      - 7001
+      - 7199
+      - 9042
+      - 9160
+
+  accounts:
+    image: tanerdiler/service-accounts-api
+    container_name: service-accounts
+    build:
+      context: ./containerized-accounts
+      dockerfile: Dockerfile
+    ports:
+      - "7500:2222"
+    depends_on:
+      - cassandra-node-1
+    links:
+      - cassandra-node-1:cassandra
+
+  products:
+    image: tanerdiler/service-products-api
+    container_name: service-products
+    build:
+      context: ./containerized-products
+      dockerfile: Dockerfile
+    ports:
+      - "7501:2222"
+    depends_on:
+      - accounts
+    links:
+      - cassandra-node-1:cassandra
+
+  orders:
+    image: tanerdiler/service-orders-api
+    container_name: service-orders
+    build:
+      context: ./containerized-orders
+      dockerfile: Dockerfile
+    ports:
+      - "7502:2222"
+    depends_on:
+      - products
+    links:
+      - cassandra-node-1:cassandra
