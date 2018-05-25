@@ -1,27 +1,37 @@
 version: '3'
 services:
-  cassandra-node-1:
-    hostname: cassandra-1
-    image: cassandra:latest
-    command: /bin/bash -c "sleep 1 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
-    expose:
-      - 7000
-      - 7001
-      - 7199
-      - 9042
-      - 9160
-  cassandra-node-2:
-    hostname: cassandra-2
-    image: cassandra:latest
-    command: /bin/bash -c "sleep 30 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
-    links:
-      - cassandra-node-1:cassandra
-    expose:
-      - 7000
-      - 7001
-      - 7199
-      - 9042
-      - 9160
+
+  discovery:
+    image: tanerdiler/service-discovery
+    container_name: service-discovery
+    build:
+      context: ./containerized-discovery
+      dockerfile: Dockerfile
+    ports:
+      - "7504:2222"
+
+#   cassandra-node-1:
+#     hostname: cassandra-1
+#     image: cassandra:latest
+#     command: /bin/bash -c "sleep 1 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
+#     expose:
+#       - 7000
+#       - 7001
+#       - 7199
+#       - 9042
+#       - 9160
+#  cassandra-node-2:
+#    hostname: cassandra-2
+#    image: cassandra:latest
+#    command: /bin/bash -c "sleep 30 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
+#    links:
+#      - cassandra-node-1:cassandra
+#    expose:
+#      - 7000
+#      - 7001
+#      - 7199
+#      - 9042
+#      - 9160
 
   accounts:
     image: tanerdiler/service-accounts-api
@@ -32,9 +42,10 @@ services:
     ports:
       - "7500:2222"
     depends_on:
-      - cassandra-node-1
-    links:
-      - cassandra-node-1:cassandra
+      - discovery
+#      - cassandra-node-1
+#    links:
+#      - cassandra-node-1:cassandra
 
   products:
     image: tanerdiler/service-products-api
@@ -46,8 +57,8 @@ services:
       - "7501:2222"
     depends_on:
       - accounts
-    links:
-      - cassandra-node-1:cassandra
+#    links:
+#      - cassandra-node-1:cassandra
 
   orders:
     image: tanerdiler/service-orders-api
@@ -59,5 +70,20 @@ services:
       - "7502:2222"
     depends_on:
       - products
+#    links:
+#      - cassandra-node-1:cassandra
+
+  main:
+    image: tanerdiler/service-main-api
+    container_name: service-main
+    build:
+      context: ./containerized-main
+      dockerfile: Dockerfile
+    ports:
+      - "7503:2222"
+    depends_on:
+      - orders
     links:
-      - cassandra-node-1:cassandra
+      - accounts
+      - products
+      - orders
