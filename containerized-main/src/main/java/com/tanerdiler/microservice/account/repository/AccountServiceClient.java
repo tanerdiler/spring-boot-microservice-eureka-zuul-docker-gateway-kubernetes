@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 @Component
-@FeignClient("account-service")
+@FeignClient("containerized-accounts")
 public interface AccountServiceClient
 {
 

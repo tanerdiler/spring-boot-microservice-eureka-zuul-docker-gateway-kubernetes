@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductResource
@@ -20,5 +22,11 @@ public class ProductResource
 	public ResponseEntity<Product> get(@PathVariable("id") Integer id)
 	{
 		return ResponseEntity.ok(repository.findById(id).get());
+	}
+
+	@GetMapping()
+	public ResponseEntity<Collection<Product>> getAll()
+	{
+		return ResponseEntity.ok(repository.findAll().get());
 	}
 }

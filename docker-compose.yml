@@ -8,7 +8,7 @@ services:
       context: ./containerized-discovery
       dockerfile: Dockerfile
     ports:
-      - "7504:2222"
+      - "8761:8761"
 
 #   cassandra-node-1:
 #     hostname: cassandra-1
@@ -44,8 +44,8 @@ services:
     depends_on:
       - discovery
 #      - cassandra-node-1
-#    links:
-#      - cassandra-node-1:cassandra
+    links:
+      - discovery:discovery
 
   products:
     image: tanerdiler/service-products-api
@@ -57,8 +57,8 @@ services:
       - "7501:2222"
     depends_on:
       - accounts
-#    links:
-#      - cassandra-node-1:cassandra
+    links:
+      - discovery:discovery
 
   orders:
     image: tanerdiler/service-orders-api
@@ -70,8 +70,8 @@ services:
       - "7502:2222"
     depends_on:
       - products
-#    links:
-#      - cassandra-node-1:cassandra
+    links:
+      - discovery:discovery
 
   main:
     image: tanerdiler/service-main-api
@@ -84,6 +84,7 @@ services:
     depends_on:
       - orders
     links:
-      - accounts
-      - products
-      - orders
+      - discovery:discovery
+      - accounts:accounts
+      - products:products
+      - orders:orders

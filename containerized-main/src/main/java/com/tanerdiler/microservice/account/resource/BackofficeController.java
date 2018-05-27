@@ -32,7 +32,7 @@ public class BackofficeController
 	private AccountServiceClient accountService;
 
 	@GetMapping("/orders")
-	public ResponseEntity<List<OrderDTO>> get(@PathVariable("id") Integer id)
+	public ResponseEntity<List<OrderDTO>> getOrders()
 	{
 		List<Order> orders = orderService.findAll();
 		Map<Integer, Account> accounts = new HashMap<>();

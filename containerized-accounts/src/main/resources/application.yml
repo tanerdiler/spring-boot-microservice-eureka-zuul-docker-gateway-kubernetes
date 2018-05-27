@@ -14,7 +14,8 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${DISCOVERY_URL:http://localhost:8761}/eureka/
+#      defaultZone: ${DISCOVER:http://localhost:8761}/eureka/
+      defaultZone: http://discovery:8761/eureka/
   instance:
     leaseRenewalIntervalInSeconds: 1
     leaseExpirationDurationInSeconds: 2

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -21,6 +22,12 @@ public class OrderResource
 	public ResponseEntity<Order> get(@PathVariable("id") Integer id)
 	{
 		return ResponseEntity.ok(repository.findById(id).get());
+	}
+
+	@GetMapping()
+	public ResponseEntity<Collection<Order>> getAll()
+	{
+		return ResponseEntity.ok(repository.findAll().get());
 	}
 
 	@PostMapping()

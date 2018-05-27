@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 @Component
-@FeignClient("product-service")
+@FeignClient("containerized-products")
 public interface ProductServiceClient
 {
 	@RequestMapping(method = RequestMethod.GET, value = "/api/v1/products/{productId}")
-	Product findById(@PathVariable("orderId") Integer orderId);
+	Product findById(@PathVariable("productId") Integer orderId);
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/v1/products")
 	List<Product> findAll();

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 @Repository
-@FeignClient("order-service")
+@FeignClient("containerized-orders")
 public interface OrderServiceClient
 {
 	@RequestMapping(method = RequestMethod.GET, value = "/api/v1/orders/{orderId}")

@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountResource
@@ -19,6 +22,13 @@ public class AccountResource
 	@GetMapping("/{id}")
 	public ResponseEntity<Account> get(@PathVariable("id") Integer id)
 	{
+		final Collection<? extends Number> foo = new ArrayList<Number>();
 		return ResponseEntity.ok(repository.findById(id).get());
+	}
+
+	@GetMapping()
+	public ResponseEntity<Collection<Account>> getAll()
+	{
+		return ResponseEntity.ok(repository.findAll().get());
 	}
 }
