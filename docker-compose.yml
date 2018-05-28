@@ -32,7 +32,18 @@ services:
 #      - 7199
 #      - 9042
 #      - 9160
-
+  gateway:
+    image: tanerdiler/service-gateway
+    container_name: service-gateway
+    build:
+      context: ./containerized-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8762:8762"
+    depends_on:
+      - discovery
+    links:
+      - discovery:discovery
   accounts:
     image: tanerdiler/service-accounts-api
     container_name: service-accounts

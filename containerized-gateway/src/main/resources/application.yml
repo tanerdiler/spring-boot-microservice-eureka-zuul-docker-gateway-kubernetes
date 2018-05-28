@@ -1,0 +1,32 @@
+server:
+  port: ${PORT:8762}
+
+spring:
+  application:
+    name: containerized-gateway
+
+
+zuul:
+#  prefix: /api/v1
+  routes:
+    containerized-main:
+      path: /api/v1/backoffice/**
+      serviceId: containerized-main
+    containerized-accounts:
+      path: /api/v1/accounts/**
+      serviceId: containerized-accounts
+    containerized-orders:
+      path: /api/v1/orders/**
+      serviceId: containerized-orders
+    containerized-products:
+      path: /api/v1/products/**
+      serviceId: containerized-products
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/
