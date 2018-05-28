@@ -10,16 +10,16 @@ zuul:
 #  prefix: /api/v1
   routes:
     containerized-main:
-      path: /api/v1/backoffice/**
+      path: /backoffice/**
       serviceId: containerized-main
     containerized-accounts:
-      path: /api/v1/accounts/**
+      path: /account/**
       serviceId: containerized-accounts
     containerized-orders:
-      path: /api/v1/orders/**
+      path: /order/**
       serviceId: containerized-orders
     containerized-products:
-      path: /api/v1/products/**
+      path: /product/**
       serviceId: containerized-products
 
 eureka:
