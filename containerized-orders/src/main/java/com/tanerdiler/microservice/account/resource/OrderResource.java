@@ -29,11 +29,4 @@ public class OrderResource
 	{
 		return ResponseEntity.ok(repository.findAll().get());
 	}
-
-	@PostMapping()
-	public ResponseEntity<Order> save(@RequestBody Order order)
-	{
-		Order persisted = repository.save(order);
-		return ResponseEntity.status(HttpStatus.CREATED).body(persisted);
-	}
 }
