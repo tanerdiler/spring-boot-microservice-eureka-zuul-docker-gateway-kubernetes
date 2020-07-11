@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>containerized-gateway</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>containerized-gateway</name>
@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>com.tanerdiler.microservice</groupId>
 		<artifactId>containerized-microservices</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1</version>
 	</parent>
 
 	<properties>
