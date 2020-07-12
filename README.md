@@ -59,3 +59,18 @@ In docker-compose.yml file:
 - Backoffice Service : **__2222__** port is mapped to **__7503__** port of host
 - Eureka Discovery Service : **__8761__** port is mapped to **__8761__** port of host
 - Zuul Gateway Service : **__8762__** port is mapped to **__8762__** port of host 
+
+## VERSIONS
+
+### 1.0.0 SNAPSHOT
+
+- Spring-Boot 2.3.1.RELEASE
+- Java 11
+- Docker Image updated
+- Spring-Cloud artifacts have been changed
+- Open Feign integrated
+
+### 0.0.1
+
+- Spring-Boot 2.0.2.RELEASE
+- Java 8
