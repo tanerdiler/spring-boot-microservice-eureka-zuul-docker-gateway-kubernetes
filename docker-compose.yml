@@ -1,6 +1,56 @@
 version: '3'
 services:
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    container_name: service-elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+#      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=elasticsearch
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+#    mem_limit: 500m
+#    cap_add:
+#      - IPC_LOCK
+#    volumes:
+#      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.0
+    container_name: service-kibana
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.8.0
+    container_name: service-logstash
+    command: logstash -f /usr/share/logstash/pipeline
+    volumes:
+      - ./containerized-logstash/config:/usr/share/logstash/config:ro
+      - ./containerized-logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+      - "12204:12204"
+    depends_on:
+      - elasticsearch
+
   discovery:
     image: tanerdiler/service-discovery
     container_name: service-discovery
@@ -44,6 +94,7 @@ services:
       - discovery
     links:
       - discovery:discovery
+
   accounts:
     image: tanerdiler/service-accounts-api
     container_name: service-accounts
@@ -67,6 +118,7 @@ services:
     ports:
       - "7501:2222"
     depends_on:
+      - discovery
       - accounts
     links:
       - discovery:discovery
@@ -80,6 +132,7 @@ services:
     ports:
       - "7502:2222"
     depends_on:
+      - discovery
       - products
     links:
       - discovery:discovery
@@ -93,6 +146,7 @@ services:
     ports:
       - "7503:2222"
     depends_on:
+      - discovery
       - orders
     links:
       - discovery:discovery
