@@ -10,6 +10,22 @@ spring:
     level:
       org.springframework: WARN
       org.hibernate: WARN
+  logstash:
+    server: logstash
+    port: 5000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  metrics:
+    distribution:
+      percentiles-histogram.http.server.requests: false
+      percentiles.http.server.requests: 0.5, 0.9, 0.95, 0.99, 0.999
+      sla.http.server.requests: 500ms, 2000ms
+
 
 eureka:
   client:
