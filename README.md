@@ -2,6 +2,8 @@
 
 This project is created to get experience on **Microservices With Netflix OSS**. This is a simple project by coded imperative programming with simple business requirements.
 
+ELK Stack has been integrated for monitoring since version 1.1.0.
+
 ## There are four microservices:
 
 - **Accounts** : This microservice is responsible for managing accounts. An account could be buyer, seller or an backoffice account but there is only buyer account.
@@ -44,6 +46,12 @@ URI for gateway : *http://localhost:8762*
 - **Netflix Ribbon** is used for client side load-balancing.
 - **Netflix Zuul** is used for gateway.
 
+## Used ELK STACK:
+
+- **ElasticSearch** is on 6972 port
+- **Logstash TCP** is on 5000 port
+- **Kibana** is on 5601 port
+
 ## Build & Run
 
 - *>mvn clean package* : to build
@@ -61,6 +69,10 @@ In docker-compose.yml file:
 - Zuul Gateway Service : **__8762__** port is mapped to **__8762__** port of host 
 
 ## VERSIONS
+
+### 1.1.0
+
+- ElasticSearch, Kibana, Logstash integration
 
 ### 1.0.0 SNAPSHOT
 
