@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.tanerdiler.microservice</groupId>
 		<artifactId>containerized-microservices</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.1.0</version>
 	</parent>
 
 	<artifactId>containerized-orders</artifactId>
