@@ -6,7 +6,7 @@ spring:
     name: containerized-gateway
   logstash:
     server: logstash
-    port: 5000
+    port: 5044
 
 management:
   endpoints:
@@ -43,4 +43,4 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://discovery:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/

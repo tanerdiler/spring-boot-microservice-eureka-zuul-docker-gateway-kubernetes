@@ -13,7 +13,7 @@ eureka:
 spring:
   logstash:
     server: logstash
-    port: 5000
+    port: 5044
 
 management:
   endpoints:
