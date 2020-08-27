@@ -24,3 +24,5 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+# elastic log files
+/elasticsearch/
