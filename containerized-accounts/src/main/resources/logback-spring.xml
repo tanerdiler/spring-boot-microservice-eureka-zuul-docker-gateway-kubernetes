@@ -1,52 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="org.springframework" level="INFO"/>
 
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-
-    <springProperty scope="context" name="application_name" source="spring.application.name"/>
-    <springProperty scope="context" name="logstash-server" source="spring.logstash.server"/>
-    <springProperty scope="context" name="logstash-port" source="spring.logstash.port"/>
-    <springProperty scope="context" name="environment" source="spring.profiles.active"/>
-    <property name="LOG_FILE" value="${LOG_PATH:-${java.io.tmpdir:-/tmp}}/${application_name}.log"/>
-    <property name="LOG_FILE_ARCHIVE" value="${LOG_PATH:-${java.io.tmpdir:-/tmp}}/archive/"/>
-
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_FILE}</file>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </layout>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_FILE_ARCHIVE}-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
-            <maxHistory>${LOG_FILE_MAX_HISTORY:-0}</maxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-    </appender>
-
-    <appender name="CONSOLE_LOGSTASH" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>
-    </appender>
-
-    <appender name="LOGSTASH_TCP" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <param name="Encoding" value="UTF-8"/>
-        <remoteHost>${logstash-server}</remoteHost>
-        <port>${logstash-port}</port>
-        <!-- encoder is required -->
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-    </appender>
-
-    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="FILE"/>
-    </appender>
-
-    <appender name="ASYNC_LOGSTASH_TCP" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="LOGSTASH_TCP"/>
+    <!-- Logstash-Configuration -->
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>192.168.1.102:5044</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service_name":"SpringBootLogger"}</customFields>
+            <fieldNames>
+                <message>log_message</message>
+            </fieldNames>
+        </encoder>
+        <keepAliveDuration>5 minutes</keepAliveDuration>
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="ASYNC_LOGSTASH_TCP" />
-        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="logstash" />
     </root>
 </configuration>
