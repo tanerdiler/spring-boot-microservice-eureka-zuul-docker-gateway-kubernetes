@@ -4,10 +4,9 @@ import com.tanerdiler.microservice.account.exception.OrderNotFoundException;
 import com.tanerdiler.microservice.account.model.Order;
 import com.tanerdiler.microservice.account.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,4 +25,10 @@ public class OrderResource {
     public ResponseEntity<Collection<Order>> getAll() {
         return ResponseEntity.ok(repository.findAll().orElse(new ArrayList<>()));
     }
+
+    @PostMapping("/new")
+    public ResponseEntity<Order> createNewOrder(@RequestBody Order order) {
+        return new ResponseEntity<>(repository.save(order), HttpStatus.CREATED);
+    }
+
 }
