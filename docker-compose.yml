@@ -134,10 +134,12 @@ services:
       context: ./containerized-main
       dockerfile: Dockerfile
     ports:
-      - "8093:2222"
+      - "8093:8093"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       - discovery
       - orders
       - logstash
+    links:
+      - discovery
