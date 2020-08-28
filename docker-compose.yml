@@ -40,6 +40,11 @@ services:
       - "12204:12204"
     depends_on:
       - elasticsearch
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5044"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 #
 #  filebeat:
 #    image: docker.elastic.co/beats/filebeat:7.8.0
@@ -63,6 +68,13 @@ services:
       - "8761:8761"
     depends_on:
       - logstash
+    links:
+      - logstash
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   gateway:
     image: tanerdiler/service-gateway
@@ -76,7 +88,8 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       - discovery
-      - logstash
+    links:
+      - discovery
 
   accounts:
     image: tanerdiler/service-accounts-api
@@ -90,7 +103,6 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       - discovery
-      - logstash
     links:
       - discovery
 
@@ -106,7 +118,6 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       - discovery
-      - logstash
     links:
       - discovery
 
@@ -123,9 +134,9 @@ services:
     depends_on:
       - discovery
       - products
-      - logstash
     links:
       - discovery
+      - products
 
   main:
     image: tanerdiler/service-main-api
@@ -140,6 +151,6 @@ services:
     depends_on:
       - discovery
       - orders
-      - logstash
     links:
       - discovery
+      - orders
