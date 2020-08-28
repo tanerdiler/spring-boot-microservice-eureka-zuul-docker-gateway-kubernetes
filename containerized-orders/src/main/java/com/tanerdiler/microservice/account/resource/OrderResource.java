@@ -3,7 +3,7 @@ package com.tanerdiler.microservice.account.resource;
 import com.tanerdiler.microservice.account.exception.OrderNotFoundException;
 import com.tanerdiler.microservice.account.model.Order;
 import com.tanerdiler.microservice.account.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
+@RequiredArgsConstructor
 public class OrderResource {
-    @Autowired
-    private OrderRepository repository;
+
+    private final OrderRepository repository;
 
     @GetMapping("/{id}")
     public ResponseEntity<Order> get(@PathVariable("id") Integer id) {

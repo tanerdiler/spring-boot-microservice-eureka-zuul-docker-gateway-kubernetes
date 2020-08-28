@@ -7,9 +7,8 @@ import com.tanerdiler.microservice.account.model.Product;
 import com.tanerdiler.microservice.account.repository.AccountServiceClient;
 import com.tanerdiler.microservice.account.repository.OrderServiceClient;
 import com.tanerdiler.microservice.account.repository.ProductServiceClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,38 +19,37 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
+@Slf4j
 public class BackofficeController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BackofficeController.class);
+    private final ProductServiceClient productService;
 
-    @Autowired
-    private ProductServiceClient productService;
-    @Autowired
-    private OrderServiceClient orderService;
-    @Autowired
-    private AccountServiceClient accountService;
+    private final OrderServiceClient orderService;
+
+    private final AccountServiceClient accountService;
 
     @GetMapping("/orders")
     public ResponseEntity<List<OrderDTO>> getOrders() {
 
-        LOG.warn("Fetching all orders...");
+        log.warn("Fetching all orders...");
         List<Order> orders = orderService.findAll();
         Map<Integer, Account> accounts = new HashMap<>();
         Map<Integer, Product> products = new HashMap<>();
 
-        LOG.warn("Fetching accounts of orders...");
+        log.warn("Fetching accounts of orders...");
         orders.stream()
                 .filter(o -> !accounts.containsKey(o.getAccountId()))
                 .map(o -> accountService.findById(o.getAccountId()))
                 .forEach(a -> accounts.put(a.getId(), a));
 
-        LOG.warn("Fetching products of orders...");
+        log.warn("Fetching products of orders...");
         orders.stream()
                 .filter(o -> !products.containsKey(o.getProductId()))
                 .map(o -> productService.findById(o.getProductId()))
                 .forEach(a -> products.put(a.getId(), a));
 
-        LOG.warn("Generating composite of orders...");
+        log.warn("Generating composite of orders...");
         List<OrderDTO> orderDTOList = new ArrayList<>();
         orders.forEach(o -> {
             orderDTOList.add(new OrderDTO(
@@ -65,6 +63,5 @@ public class BackofficeController {
         });
 
         return ResponseEntity.ok(orderDTOList);
-
     }
 }
