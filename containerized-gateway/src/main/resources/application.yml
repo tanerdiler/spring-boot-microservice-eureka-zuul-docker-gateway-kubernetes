@@ -5,7 +5,7 @@ spring:
   application:
     name: containerized-gateway
   logstash:
-    server: logstash
+    server: 192.168.1.102
     port: 5044
 
 management:
@@ -21,7 +21,7 @@ management:
       sla.http.server.requests: 500ms, 2000ms
 
 zuul:
-#  prefix: /api/v1
+  prefix: /api/v1
   routes:
     containerized-main:
       path: /backoffice/**
