@@ -6,9 +6,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class ContainerizedAccountsApplication {
+public class ContainerizedProductsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ContainerizedAccountsApplication.class, args);
+        SpringApplication.run(ContainerizedProductsApplication.class, args);
     }
 }
