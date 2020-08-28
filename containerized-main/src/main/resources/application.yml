@@ -12,29 +12,27 @@ spring:
       org.hibernate: WARN
   logstash:
     server: logstash
-    port: 5000
+    port: 5044
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-
   metrics:
     distribution:
       percentiles-histogram.http.server.requests: false
       percentiles.http.server.requests: 0.5, 0.9, 0.95, 0.99, 0.999
       sla.http.server.requests: 500ms, 2000ms
 
-
 eureka:
-  client:
-    serviceUrl:
-#      defaultZone: ${DISCOVERY_URL:http://localhost:8761}/eureka/
-      defaultZone: http://discovery:8761/eureka/
   instance:
-    leaseRenewalIntervalInSeconds: 1
-    leaseExpirationDurationInSeconds: 2
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
 
 ribbon:
   eureka:
