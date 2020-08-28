@@ -1,42 +1,33 @@
-version: '3'
+version: '3.5'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
-    container_name: service-elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    restart: unless-stopped
     environment:
-      - "node.name=elasticsearch"
-      - "cluster.name=es-docker-cluster"
-      - "cluster.initial_master_nodes=elasticsearch"
-      - "bootstrap.memory_lock=true"
-      - "xpack.security.enabled=false"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      discovery.type: single-node
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
         hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-#    mem_limit: 500m
-#    cap_add:
-#      - IPC_LOCK
-#    volumes:
-#      - data01:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.8.0
-    container_name: service-kibana
-    ports:
-      - "5601:5601"
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-
+    healthcheck:
+      test: "curl -f http://localhost:9200 || exit 1"
+      start_period: 1m
+    volumes:
+      - ./elasticsearch/data:/usr/share/elasticsearch/data:rw              # Persistence data
+#
+#  kibana:
+#    image: docker.elastic.co/kibana/kibana:7.8.0
+#    container_name: service-kibana
+#    ports:
+#      - "5601:5601"
+#    depends_on:
+#      - elasticsearch
+#
   logstash:
     image: docker.elastic.co/logstash/logstash:7.8.0
     container_name: service-logstash
@@ -45,10 +36,22 @@ services:
       - ./containerized-logstash/config:/usr/share/logstash/config:ro
       - ./containerized-logstash/pipeline:/usr/share/logstash/pipeline:ro
     ports:
-      - "5000:5000"
+      - "5044:5044"
       - "12204:12204"
     depends_on:
       - elasticsearch
+#
+#  filebeat:
+#    image: docker.elastic.co/beats/filebeat:7.8.0
+#    volumes:
+#      - ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro # Configuration file
+#      - /var/lib/docker/containers:/var/lib/docker/containers:ro           # Docker logs
+#      - /var/run/docker.sock:/var/run/docker.sock:ro                       # Additional information about containers
+#      - ./filebeat/data:/usr/share/filebeat/data:rw                        # Persistence data
+#    user: root                                                             # Allow access to log files and docker.sock
+#    restart: on-failure
+#    depends_on:
+#      - logstash
 
   discovery:
     image: tanerdiler/service-discovery
@@ -58,29 +61,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8761:8761"
+    depends_on:
+      - logstash
 
-#   cassandra-node-1:
-#     hostname: cassandra-1
-#     image: cassandra:latest
-#     command: /bin/bash -c "sleep 1 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
-#     expose:
-#       - 7000
-#       - 7001
-#       - 7199
-#       - 9042
-#       - 9160
-#  cassandra-node-2:
-#    hostname: cassandra-2
-#    image: cassandra:latest
-#    command: /bin/bash -c "sleep 30 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
-#    links:
-#      - cassandra-node-1:cassandra
-#    expose:
-#      - 7000
-#      - 7001
-#      - 7199
-#      - 9042
-#      - 9160
   gateway:
     image: tanerdiler/service-gateway
     container_name: service-gateway
@@ -89,10 +72,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8762:8762"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       - discovery
-    links:
-      - discovery:discovery
+      - logstash
 
   accounts:
     image: tanerdiler/service-accounts-api
@@ -101,54 +85,9 @@ services:
       context: ./containerized-accounts
       dockerfile: Dockerfile
     ports:
-      - "7500:2222"
+      - "8090:2222"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       - discovery
-#      - cassandra-node-1
-    links:
-      - discovery:discovery
-
-  products:
-    image: tanerdiler/service-products-api
-    container_name: service-products
-    build:
-      context: ./containerized-products
-      dockerfile: Dockerfile
-    ports:
-      - "7501:2222"
-    depends_on:
-      - discovery
-      - accounts
-    links:
-      - discovery:discovery
-
-  orders:
-    image: tanerdiler/service-orders-api
-    container_name: service-orders
-    build:
-      context: ./containerized-orders
-      dockerfile: Dockerfile
-    ports:
-      - "7502:2222"
-    depends_on:
-      - discovery
-      - products
-    links:
-      - discovery:discovery
-
-  main:
-    image: tanerdiler/service-main-api
-    container_name: service-main
-    build:
-      context: ./containerized-main
-      dockerfile: Dockerfile
-    ports:
-      - "7503:2222"
-    depends_on:
-      - discovery
-      - orders
-    links:
-      - discovery:discovery
-      - accounts:accounts
-      - products:products
-      - orders:orders
+      - logstash
