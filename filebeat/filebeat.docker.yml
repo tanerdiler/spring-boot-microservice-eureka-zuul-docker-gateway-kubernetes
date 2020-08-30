@@ -20,6 +20,6 @@ filebeat.autodiscover:
                     overwrite_keys: true
 
 output.logstash:
-  hosts: "logstash:5044"
+  hosts: "logstash:5000"
 
 logging.metrics.enabled: false

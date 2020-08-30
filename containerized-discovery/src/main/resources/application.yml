@@ -13,7 +13,7 @@ eureka:
 spring:
   logstash:
     server: 192.168.1.102
-    port: 5044
+    port: 5000
 
 management:
   endpoints:

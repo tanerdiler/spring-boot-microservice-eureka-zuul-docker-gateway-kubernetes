@@ -12,7 +12,7 @@ spring:
       org.hibernate: WARN
   logstash:
     server: logstash
-    port: 5044
+    port: 5000
 
 management:
   endpoints:
