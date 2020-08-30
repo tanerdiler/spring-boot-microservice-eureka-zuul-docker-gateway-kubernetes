@@ -36,27 +36,13 @@ services:
       - ./containerized-logstash/config:/usr/share/logstash/config:ro
       - ./containerized-logstash/pipeline:/usr/share/logstash/pipeline:ro
     ports:
-      - "5044:5044"
+      - "5000:5000"
       - "12204:12204"
+    restart: unless-stopped
+    links:
+      - elasticsearch
     depends_on:
       - elasticsearch
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5044"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-#
-#  filebeat:
-#    image: docker.elastic.co/beats/filebeat:7.8.0
-#    volumes:
-#      - ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro # Configuration file
-#      - /var/lib/docker/containers:/var/lib/docker/containers:ro           # Docker logs
-#      - /var/run/docker.sock:/var/run/docker.sock:ro                       # Additional information about containers
-#      - ./filebeat/data:/usr/share/filebeat/data:rw                        # Persistence data
-#    user: root                                                             # Allow access to log files and docker.sock
-#    restart: on-failure
-#    depends_on:
-#      - logstash
 
   discovery:
     image: tanerdiler/service-discovery
@@ -66,15 +52,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8761:8761"
-    depends_on:
-      - logstash
     links:
       - logstash
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8761"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    depends_on:
+      - logstash
 
   gateway:
     image: tanerdiler/service-gateway
@@ -88,8 +69,10 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       - discovery
+      - products
     links:
       - discovery
+      - products
 
   accounts:
     image: tanerdiler/service-accounts-api
@@ -103,8 +86,10 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       - discovery
+      - products
     links:
       - discovery
+      - products
 
   products:
     image: tanerdiler/service-products-api
@@ -118,39 +103,41 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       - discovery
-    links:
-      - discovery
-
-  orders:
-    image: tanerdiler/service-orders-api
-    container_name: service-orders
-    build:
-      context: ./containerized-orders
-      dockerfile: Dockerfile
-    ports:
-      - "8092:8092"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-    depends_on:
-      - discovery
       - products
     links:
       - discovery
       - products
 
-  main:
-    image: tanerdiler/service-main-api
-    container_name: service-main
-    build:
-      context: ./containerized-main
-      dockerfile: Dockerfile
-    ports:
-      - "8093:8093"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-    depends_on:
-      - discovery
-      - orders
-    links:
-      - discovery
-      - orders
+#  orders:
+#    image: tanerdiler/service-orders-api
+#    container_name: service-orders
+#    build:
+#      context: ./containerized-orders
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8092:8092"
+#    environment:
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+#    depends_on:
+#      - discovery
+#      - products
+#    links:
+#      - discovery
+#      - products
+#
+#  main:
+#    image: tanerdiler/service-main-api
+#    container_name: service-main
+#    build:
+#      context: ./containerized-main
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8093:8093"
+#    environment:
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+#    depends_on:
+#      - discovery
+#      - orders
+#    links:
+#      - discovery
+#      - orders
