@@ -5,7 +5,7 @@ spring:
   application:
     name: containerized-gateway
   logstash:
-    server: 192.168.1.102
+    server: logstash
     port: 5000
 
 management:
@@ -13,7 +13,6 @@ management:
     web:
       exposure:
         include: "*"
-
   metrics:
     distribution:
       percentiles-histogram.http.server.requests: false
@@ -35,6 +34,9 @@ zuul:
     containerized-products:
       path: /product/**
       serviceId: containerized-products
+  ribbon:
+    eager-load:
+      enabled: true
 
 eureka:
   instance:

@@ -12,7 +12,7 @@ eureka:
 
 spring:
   logstash:
-    server: 192.168.1.102
+    server: logstash
     port: 5000
 
 management:
