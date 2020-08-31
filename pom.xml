@@ -24,6 +24,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <logtash-logback-encoder.version>6.4</logtash-logback-encoder.version>
+        <logtash-logback-qos>1.2.3</logtash-logback-qos>
     </properties>
 
     <modules>
@@ -66,6 +67,16 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logtash-logback-encoder.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logtash-logback-qos}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logtash-logback-qos}</version>
         </dependency>
         <!-- TESTING -->
         <dependency>
