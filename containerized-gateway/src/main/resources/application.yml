@@ -1,12 +1,16 @@
+spring:
+  profiles:
+    active: native
+
+---
 server:
   port: ${PORT:8762}
 
 spring:
   application:
     name: containerized-gateway
-  logstash:
-    server: logstash
-    port: 5000
+  profiles:
+    active: native
 
 management:
   endpoints:
@@ -46,6 +50,60 @@ eureka:
     fetch-registry: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+# Increase the Hystrix timeout to 60s (globally)
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+---
+
+server:
+  port: ${PORT:8762}
+
+spring:
+  application:
+    name: containerized-gateway
+  profiles:
+    active: docker
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+zuul:
+  prefix: /api/v1
+  routes:
+    containerized-main:
+      path: /backoffice/**
+      serviceId: containerized-main
+    containerized-accounts:
+      path: /account/**
+      serviceId: containerized-accounts
+    containerized-orders:
+      path: /order/**
+      serviceId: containerized-orders
+    containerized-products:
+      path: /product/**
+      serviceId: containerized-products
+  ribbon:
+    eager-load:
+      enabled: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${DISCOVERY_URL:http://discovery:8761}/eureka/
 
 # Increase the Hystrix timeout to 60s (globally)
 hystrix:
