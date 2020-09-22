@@ -3,3 +3,5 @@ MAINTAINER Taner Diler <taner.diler@gmail.com>
 ADD target/*.jar containerized-gateway.jar
 
 ENTRYPOINT ["java", "-jar", "/containerized-gateway.jar"]
+
+EXPOSE 8762

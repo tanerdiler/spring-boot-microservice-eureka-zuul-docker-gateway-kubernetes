@@ -3,3 +3,5 @@ MAINTAINER Taner Diler <taner.diler@gmail.com>
 ADD target/*.jar containerized-accounts.jar
 
 ENTRYPOINT ["java", "-jar", "/containerized-accounts.jar"]
+
+EXPOSE 8090
