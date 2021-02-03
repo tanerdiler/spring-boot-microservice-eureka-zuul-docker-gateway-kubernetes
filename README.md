@@ -1,4 +1,4 @@
-# SPRING BOOT MICROCSERVICE USING SPRING CLOUD, EUREKA, RIBBON, ZUUL
+# SPRING BOOT MICROCSERVICE USING SPRING CLOUD, EUREKA, RIBBON, ZUUL, ZIPKIN, SLEUTH
 
 This project is created to get experience on **Microservices With Netflix OSS**. This is a simple project by coded imperative programming with simple business requirements.
 
@@ -51,6 +51,8 @@ URI for gateway : *http://localhost:8762*
 - **Sleuth** and **Zipkin**
 
 You can open Zipkin : http://localhost:9411
+![Zipkin Filter](https://github.com/tanerdiler/spring-boot-microservice-eureka-zuul-docker/blob/master/assets/zipkin-1_0.png)
+![Zipkin Full Trace](https://github.com/tanerdiler/spring-boot-microservice-eureka-zuul-docker/blob/master/assets/zipkin-1_1.png)
 
 ## Used ELK STACK:
 
@@ -59,6 +61,8 @@ You can open Zipkin : http://localhost:9411
 - **Kibana** is on 5601 port
 
 Open kibana with http://localhost:5601/. You must define an index pattern (taner-*) on Management/Stack Management.
+
+![Kibana](https://github.com/tanerdiler/spring-boot-microservice-eureka-zuul-docker/blob/master/assets/kibana-1.png)
 
 ## Build & Run
 
