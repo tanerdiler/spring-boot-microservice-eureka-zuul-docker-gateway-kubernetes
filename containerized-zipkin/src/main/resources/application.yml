@@ -1,0 +1,34 @@
+server:
+  port: ${PORT:5700}
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: containerized-zipkin
+  logstash:
+    server: logstash
+    port: 5000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  metrics:
+    distribution:
+      percentiles-histogram.http.server.requests: false
+      percentiles.http.server.requests: 0.5, 0.9, 0.95, 0.99, 0.999
+      sla.http.server.requests: 500ms, 2000ms
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${DISCOVERY_URL:http://discovery:8761}/eureka/
+
+

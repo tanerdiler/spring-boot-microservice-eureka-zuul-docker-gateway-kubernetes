@@ -46,11 +46,19 @@ URI for gateway : *http://localhost:8762*
 - **Netflix Ribbon** is used for client side load-balancing.
 - **Netflix Zuul** is used for gateway.
 
+## Distributed Tracing:
+
+- **Sleuth** and **Zipkin**
+
+You can open Zipkin : http://localhost:9411
+
 ## Used ELK STACK:
 
 - **ElasticSearch** is on 6972 port
 - **Logstash TCP** is on 5000 port
 - **Kibana** is on 5601 port
+
+Open kibana with http://localhost:5601/. You must define an index pattern (taner-*) on Management/Stack Management.
 
 ## Build & Run
 

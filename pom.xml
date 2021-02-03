@@ -28,6 +28,7 @@
 
 	<modules>
 		<module>containerized-gateway</module>
+
 		<module>containerized-discovery</module>
 		<module>containerized-accounts</module>
 		<module>containerized-products</module>
@@ -53,6 +54,13 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.12</version>
+			<scope>provided</scope>
 		</dependency>
 		<!-- LOGGING -->
 		<dependency>

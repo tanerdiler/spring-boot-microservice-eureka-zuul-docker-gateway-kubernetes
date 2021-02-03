@@ -13,6 +13,8 @@ spring:
   logstash:
     server: logstash
     port: 5000
+  zipkin:
+    base-url: ${ZIPKIN_URL:http://zipkin:9411}/
 
 management:
   endpoints:
@@ -28,13 +30,11 @@ management:
 
 
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     serviceUrl:
-#      defaultZone: ${DISCOVERY_URL:http://localhost:8761}/eureka/
-      defaultZone: http://discovery:8761/eureka/
-  instance:
-    leaseRenewalIntervalInSeconds: 1
-    leaseExpirationDurationInSeconds: 2
+      defaultZone: ${DISCOVERY_URL:http://discovery:8761}/eureka/
 
 ribbon:
   eureka:

@@ -7,6 +7,8 @@ spring:
   logstash:
     server: logstash
     port: 5000
+  zipkin:
+    base-url: ${ZIPKIN_URL:http://zipkin:9411}/
 
 management:
   endpoints:
@@ -21,7 +23,6 @@ management:
       sla.http.server.requests: 500ms, 2000ms
 
 zuul:
-#  prefix: /api/v1
   routes:
     containerized-main:
       path: /backoffice/**
@@ -35,6 +36,9 @@ zuul:
     containerized-products:
       path: /product/**
       serviceId: containerized-products
+  ribbon:
+    eager-load:
+      enabled: true
 
 eureka:
   instance:
@@ -43,4 +47,14 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://discovery:8761/eureka/
+      defaultZone: ${DISCOVERY_URL:http://discovery:8761}/eureka/
+
+# Increase the Hystrix timeout to 60s (globally)
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+

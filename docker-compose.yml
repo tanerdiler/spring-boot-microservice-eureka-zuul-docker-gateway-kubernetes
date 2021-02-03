@@ -4,11 +4,15 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
     container_name: service-elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    restart: unless-stopped
     environment:
+      - discovery.type=single-node
       - node.name=elasticsearch
       - cluster.name=es-docker-cluster
-#      - discovery.seed_hosts=es02,es03
-      - cluster.initial_master_nodes=elasticsearch
+      #- cluster.initial_master_nodes=elasticsearch
       - bootstrap.memory_lock=true
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -22,10 +26,8 @@ services:
 #    mem_limit: 500m
 #    cap_add:
 #      - IPC_LOCK
-#    volumes:
-#      - data01:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
+    volumes:
+      - ./elasticsearch/data:/usr/share/elasticsearch/data:rw
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.8.0
@@ -38,9 +40,16 @@ services:
     depends_on:
       - elasticsearch
 
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: service-zipkin
+    ports:
+      - 9411:9411
+
   logstash:
     image: docker.elastic.co/logstash/logstash:7.8.0
     container_name: service-logstash
+    restart: unless-stopped
     command: logstash -f /usr/share/logstash/pipeline
     volumes:
       - ./containerized-logstash/config:/usr/share/logstash/config:ro
@@ -59,6 +68,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8761:8761"
+    depends_on:
+      - logstash
+    links:
+      - logstash
 
 #   cassandra-node-1:
 #     hostname: cassandra-1
@@ -90,10 +103,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8762:8762"
-    depends_on:
-      - discovery
     links:
-      - discovery:discovery
+      - discovery
+      - logstash
+      - zipkin
 
   accounts:
     image: tanerdiler/service-accounts-api
@@ -103,11 +116,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "7500:2222"
-    depends_on:
-      - discovery
-#      - cassandra-node-1
     links:
-      - discovery:discovery
+      - discovery
+      - logstash
+      - zipkin
 
   products:
     image: tanerdiler/service-products-api
@@ -121,7 +133,9 @@ services:
       - discovery
       - accounts
     links:
-      - discovery:discovery
+      - discovery
+      - logstash
+      - zipkin
 
   orders:
     image: tanerdiler/service-orders-api
@@ -135,7 +149,9 @@ services:
       - discovery
       - products
     links:
-      - discovery:discovery
+      - discovery
+      - logstash
+      - zipkin
 
   main:
     image: tanerdiler/service-main-api
@@ -149,7 +165,9 @@ services:
       - discovery
       - orders
     links:
-      - discovery:discovery
-      - accounts:accounts
-      - products:products
-      - orders:orders
+      - discovery
+      - logstash
+      - accounts
+      - products
+      - orders
+      - zipkin
