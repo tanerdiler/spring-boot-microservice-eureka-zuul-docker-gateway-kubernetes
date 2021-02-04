@@ -82,6 +82,11 @@ In docker-compose.yml file:
 
 ## VERSIONS
 
+### 1.2.0
+- Sleuth and Zipkin Integration
+- Making some refactorings
+- Lombok Integration
+
 ### 1.1.0
 
 - ElasticSearch, Kibana, Logstash integration
