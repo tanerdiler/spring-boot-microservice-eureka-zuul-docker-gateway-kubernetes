@@ -1,0 +1,46 @@
+#global config
+global:
+  scrape_interval:     15s
+  evaluation_interval: 5s
+  scrape_timeout:     15s
+  #query_log_file: <string>
+  external_labels:
+    monitor: 'codelab-monitor'
+# Scrape configs only contain one scrape target
+scrape_configs:
+  - job_name: 'main'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['main:2222']
+  - job_name: 'accounts'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['accounts:2222']
+  - job_name: 'products'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['products:2222']
+  - job_name: 'orders'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['orders:2222']
+  - job_name: 'discovery'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['discovery:8761']
+  - job_name: 'gateway'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['gateway:8762']

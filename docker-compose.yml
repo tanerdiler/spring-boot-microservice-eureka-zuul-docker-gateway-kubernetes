@@ -171,3 +171,27 @@ services:
       - products
       - orders
       - zipkin
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./containerized-prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    links:
+      - discovery
+      - gateway
+      - accounts
+      - products
+      - orders
+      - main
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    user: "104"
