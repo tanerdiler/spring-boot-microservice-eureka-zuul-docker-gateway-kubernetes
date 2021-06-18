@@ -12,9 +12,9 @@ import java.util.List;
 @FeignClient("containerized-orders")
 public interface OrderServiceClient
 {
-	@GetMapping(value = "/api/v1/orders/{orderId}")
+	@GetMapping(value = "/order/api/v1/orders/{orderId}")
 	Order findById(@PathVariable("orderId") Integer orderId);
 
-	@GetMapping(value = "/api/v1/orders")
+	@GetMapping(value = "/order/api/v1/orders")
 	List<Order> findAll();
 }

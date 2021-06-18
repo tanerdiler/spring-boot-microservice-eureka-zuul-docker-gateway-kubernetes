@@ -16,15 +16,15 @@ microservices via **Feign**.
 
 ### EndPoints ###
 
-| Service       | EndPoint                      | Method | Description                                      |
-| ------------- | ----------------------------- | :-----:| ------------------------------------------------ |
-| Accounts      | /api/v1/accounts/{id}         | GET    | Return detail of specified account               |
-| Accounts      | /api/v1/accounts              | GET    | Return details of all acounts                    |
-| Products      | /api/v1/products/{id}         | GET    | Return detail of specified product               |
-| Products      | /api/v1/products              | GET    | Return details of all products                   |
-| Orders        | /api/v1/orders/{id}           | GET    | Return detail of order                           |
-| Orders        | /api/v1/orders                | GET    | Return details of orders                         |
-| Backoffice    | /api/v1/backoffice/orders     | GET    | Return orders with product name and account name |
+| Service       | EndPoint                     | Port    | Method | Description                                      |
+| ------------- | -----------------------------| :-----: | :-----:| ------------------------------------------------ |
+| Accounts      | /api/v1/accounts/{id}        | 7500    | GET    | Return detail of specified account               |
+| Accounts      | /api/v1/accounts             | 7500    | GET    | Return details of all acounts                    |
+| Products      | /api/v1/products/{id}        | 7501    | GET    | Return detail of specified product               |
+| Products      | /api/v1/products             | 7501    | GET    | Return details of all products                   |
+| Orders        | /api/v1/orders/{id}          | 7502    | GET    | Return detail of order                           |
+| Orders        | /api/v1/orders               | 7502    | GET    | Return details of orders                         |
+| Backoffice    | /api/v1/backoffice/orders    | 7503    | GET    | Return orders with product name and account name |
 
 ### Gateways ###
 
@@ -78,9 +78,13 @@ In docker-compose.yml file:
 - Orders Service : **__2222__** port is mapped to **__7502__** port of host
 - Backoffice Service : **__2222__** port is mapped to **__7503__** port of host
 - Eureka Discovery Service : **__8761__** port is mapped to **__8761__** port of host
-- Zuul Gateway Service : **__8762__** port is mapped to **__8762__** port of host 
+- Spring Boot (/ Zuul) Gateway Service : **__8762__** port is mapped to **__8762__** port of host 
 
 ## VERSIONS
+
+### 1.3.0
+- Update Spring Boot version to 2.5.1
+- Switch to Spring Boot Gateway
 
 ### 1.2.0
 - Sleuth and Zipkin Integration
