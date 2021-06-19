@@ -12,9 +12,9 @@ import java.util.List;
 @FeignClient("containerized-products")
 public interface ProductServiceClient
 {
-	@GetMapping(value = "/api/v1/products/{productId}")
+	@GetMapping(value = "/product/api/v1/products/{productId}")
 	Product findById(@PathVariable("productId") Integer orderId);
 
-	@GetMapping(value = "/api/v1/products")
+	@GetMapping(value = "/product/api/v1/products")
 	List<Product> findAll();
 }

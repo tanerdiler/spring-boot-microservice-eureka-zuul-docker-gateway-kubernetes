@@ -17,7 +17,6 @@ import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
-@Order(TraceWebFilter.ORDER + 1)
 public class SleuthConfig extends GenericFilterBean {
 
     private final Tracer tracer;
