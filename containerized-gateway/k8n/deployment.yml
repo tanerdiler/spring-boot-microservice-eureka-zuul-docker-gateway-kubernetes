@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8n-service-gateway
+  labels:
+    app: k8n-service-gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8n-service-gateway
+  template:
+    metadata:
+      labels:
+        app: k8n-service-gateway
+    spec:
+      containers:
+        - name: containerized-gateway
+          image: tanerdiler/service-gateway:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8762

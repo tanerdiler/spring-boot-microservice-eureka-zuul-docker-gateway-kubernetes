@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8n-service-accounts
+  labels:
+    app: k8n-service-accounts
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8n-service-accounts
+  template:
+    metadata:
+      labels:
+        app: k8n-service-accounts
+    spec:
+      containers:
+        - name: containerized-accounts
+          image: tanerdiler/service-accounts-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 2222
