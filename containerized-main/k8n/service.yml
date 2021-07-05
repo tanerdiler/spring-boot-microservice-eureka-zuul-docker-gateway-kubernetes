@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: containerized-main
+spec:
+  selector:
+    app: k8n-service-main
+  ports:
+    - protocol: TCP
+      port: 7503
+      targetPort: 2222

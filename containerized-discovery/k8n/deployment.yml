@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8n-service-discovery
+  labels:
+    app: k8n-service-discovery
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8n-service-discovery
+  template:
+    metadata:
+      labels:
+        app: k8n-service-discovery
+    spec:
+      containers:
+        - name: containerized-discovery
+          image: tanerdiler/service-discovery:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8761

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: containerized-orders
+spec:
+  selector:
+    app: k8n-service-orders
+  ports:
+    - protocol: TCP
+      port: 7502
+      targetPort: 2222

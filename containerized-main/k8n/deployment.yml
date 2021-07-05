@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8n-service-main
+  labels:
+    app: k8n-service-main
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8n-service-main
+  template:
+    metadata:
+      labels:
+        app: k8n-service-main
+    spec:
+      containers:
+        - name: containerized-main
+          image: tanerdiler/service-main-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 2222
