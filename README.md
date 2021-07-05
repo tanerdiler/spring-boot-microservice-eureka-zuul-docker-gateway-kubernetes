@@ -113,6 +113,10 @@ In docker-compose.yml file:
 
 ## VERSIONS
 
+### 1.3.1
+
+- Add kubernetes yaml files (still using Eureka discovery)
+
 ### 1.3.0
 - Update Spring Boot version to 2.5.1
 - Switch to Spring Boot Gateway
