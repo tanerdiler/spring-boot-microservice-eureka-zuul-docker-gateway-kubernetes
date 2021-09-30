@@ -4,7 +4,7 @@ metadata:
   name: discovery
 spec:
   selector:
-    app: k8n-service-discovery
+    app: k8s-service-discovery
   ports:
     - protocol: TCP
       port: 8761

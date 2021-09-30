@@ -4,7 +4,7 @@ metadata:
   name: containerized-accounts
 spec:
   selector:
-    app: k8n-service-accounts
+    app: k8s-service-accounts
   ports:
     - protocol: TCP
       port: 7500

@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  logstash.conf: "input {\n\ttcp {\n      port => 5000\n      add_field => [ \"source\",
+    \"taner-api\" ]\n      codec => json_lines\n  }\n}\nfilter {\n  if \"_jsonparsefailure\"
+    in [tags] {\n      drop { }\n  }\n}\noutput {\n  if [source] == \"taner-api\"
+    {\n      elasticsearch {\n          hosts => [ \"elasticsearch:9200\"]\n          index
+    => \"taner-api-%{+YYYY.MM.dd}\"\n          ssl => false\n          ssl_certificate_verification
+    => false\n      }\n  }\n}\n"
+kind: ConfigMap
+metadata:
+  name: logstash
+  namespace: default

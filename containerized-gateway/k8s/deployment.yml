@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8n-service-gateway
+  name: k8s-service-gateway
   labels:
-    app: k8n-service-gateway
+    app: k8s-service-gateway
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: k8n-service-gateway
+      app: k8s-service-gateway
   template:
     metadata:
       labels:
-        app: k8n-service-gateway
+        app: k8s-service-gateway
     spec:
       containers:
         - name: containerized-gateway

@@ -5,6 +5,7 @@ import com.tanerdiler.microservice.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,10 +22,14 @@ public class ProductResource {
 
 	private final ProductRepository repository;
 
+	@Value("${my.env.type}")
+	private String myEnvType;
+
 	@GetMapping("/{id}")
 	public ResponseEntity<Product> get(@PathVariable("id") Integer id)
 	{
 		final var product = repository.findById(id).get();
+		log.info("My Env Type : {}", myEnvType);
 		log.info("Product {} detail fetched {}", id, product);
 		return ResponseEntity.ok(product);
 	}
@@ -33,6 +38,7 @@ public class ProductResource {
 	public ResponseEntity<Collection<Product>> getAll()
 	{
 		final var products = repository.findAll().get();
+		log.info("My Env Type : {}", myEnvType);
 		log.info("Executing fetching all products {}", products);
 		return ResponseEntity.ok(products);
 	}

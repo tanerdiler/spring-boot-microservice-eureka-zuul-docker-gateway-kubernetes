@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8n-service-discovery
+  name: k8s-service-discovery
   labels:
-    app: k8n-service-discovery
+    app: k8s-service-discovery
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: k8n-service-discovery
+      app: k8s-service-discovery
   template:
     metadata:
       labels:
-        app: k8n-service-discovery
+        app: k8s-service-discovery
     spec:
       containers:
         - name: containerized-discovery

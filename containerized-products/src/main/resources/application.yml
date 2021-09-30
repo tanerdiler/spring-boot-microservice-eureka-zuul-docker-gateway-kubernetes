@@ -13,10 +13,10 @@ spring:
       org.springframework: WARN
       org.hibernate: WARN
   logstash:
-    server: logstash
-    port: 5000
+    server: ${logstash.service.host:logstash}
+    port: ${logstash.service.port:5000}
   zipkin:
-    base-url: ${ZIPKIN_URL:http://zipkin:9411}/
+    base-url: http://${zipkin.service.host:zipkin}:${zipkin.service.port:9411}
 
 management:
   endpoints:
@@ -42,3 +42,7 @@ eureka:
 ribbon:
   eureka:
     enabled: true
+
+my:
+  env:
+    type: local

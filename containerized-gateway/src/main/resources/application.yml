@@ -5,10 +5,10 @@ spring:
   application:
     name: containerized-gateway
   logstash:
-    server: logstash
-    port: 5000
+    server: ${${LOGSTASH_SERVICE}.service.host}
+    port: ${${LOGSTASH_SERVICE}.service.port}
   zipkin:
-    base-url: ${ZIPKIN_URL:http://zipkin:9411}/
+    base-url: http://${${ZIPKIN_SERVICE}.service.host}:${${ZIPKIN_SERVICE}.service.port}
   cloud:
     gateway:
       routes:
@@ -47,7 +47,7 @@ eureka:
   client:
     registerWithEureka: false
     serviceUrl:
-      defaultZone: ${DISCOVERY_URL:http://discovery:8761}/eureka
+      defaultZone: http://${${DISCOVERY_SERVICE}.service.host}:${${DISCOVERY_SERVICE}.service.port}/eureka/
 
 # Increase the Hystrix timeout to 60s (globally)
 hystrix:

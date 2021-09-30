@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8n-service-orders
+  name: k8s-service-orders
   labels:
-    app: k8n-service-orders
+    app: k8s-service-orders
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: k8n-service-orders
+      app: k8s-service-orders
   template:
     metadata:
       labels:
-        app: k8n-service-orders
+        app: k8s-service-orders
     spec:
       containers:
         - name: containerized-orders

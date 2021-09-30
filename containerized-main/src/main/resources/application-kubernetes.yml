@@ -1,0 +1,14 @@
+spring:
+  cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: true
+      enabled: true
+
+eureka:
+  client:
+    enabled: false
+
+my:
+  env:
+    type: kubernetes

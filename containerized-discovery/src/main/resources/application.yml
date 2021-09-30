@@ -12,10 +12,10 @@ eureka:
 
 spring:
   logstash:
-    server: logstash
-    port: 5000
+    server: ${${LOGSTASH_SERVICE}.service.host}
+    port: ${${LOGSTASH_SERVICE}.service.port}
   zipkin:
-    base-url: ${ZIPKIN_URL:http://zipkin:9411}/
+    base-url: http://${${ZIPKIN_SERVICE}.service.host}:${${ZIPKIN_SERVICE}.service.port}
 
 management:
   endpoints:

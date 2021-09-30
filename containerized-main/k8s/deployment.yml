@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8n-service-main
+  name: k8s-service-main
   labels:
-    app: k8n-service-main
+    app: k8s-service-main
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: k8n-service-main
+      app: k8s-service-main
   template:
     metadata:
       labels:
-        app: k8n-service-main
+        app: k8s-service-main
     spec:
       containers:
         - name: containerized-main
