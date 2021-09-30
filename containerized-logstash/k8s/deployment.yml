@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-service-logstash
+  labels:
+    app: k8s-service-logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-service-logstash
+  template:
+    metadata:
+      labels:
+        app: k8s-service-logstash
+    spec:
+      containers:
+        - name: containerized-logstash
+          image: docker.elastic.co/logstash/logstash:7.8.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+            - containerPort: 12204
+          volumeMounts:
+            - name: containerized-logstash-pipeline
+              mountPath: /usr/share/logstash/pipeline
+          command:
+            - logstash
+      volumes:
+        - name: containerized-logstash-pipeline
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: logstash
+

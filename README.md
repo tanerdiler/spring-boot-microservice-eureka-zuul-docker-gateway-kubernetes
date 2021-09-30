@@ -82,32 +82,32 @@ In docker-compose.yml file:
 
 ## KUBERNETES
 
-- kubectl create -f containerized-accounts/k8n/deployment.yml
-- kubectl create -f containerized-accounts/k8n/service.yml
+- kubectl create -f containerized-accounts/k8s/deployment.yml
+- kubectl create -f containerized-accounts/k8s/service.yml
 - kubectl port-forward svc/containerized-accounts 7500:7500
 - curl localhost:7500/account/api/v1/accounts
 
-- kubectl create -f containerized-products/k8n/deployment.yml
-- kubectl create -f containerized-products/k8n/service.yml
+- kubectl create -f containerized-products/k8s/deployment.yml
+- kubectl create -f containerized-products/k8s/service.yml
 - kubectl port-forward svc/containerized-products 7501:7501
 - curl http://localhost:7501/product/api/v1/products
 
-- kubectl create -f containerized-orders/k8n/deployment.yml
-- kubectl create -f containerized-orders/k8n/service.yml
+- kubectl create -f containerized-orders/k8s/deployment.yml
+- kubectl create -f containerized-orders/k8s/service.yml
 - kubectl port-forward svc/containerized-orders 7502:7502
 - curl localhost:7502/order/api/v1/orders
 
-- kubectl create -f containerized-main/k8n/deployment.yml
-- kubectl create -f containerized-main/k8n/service.yml
+- kubectl create -f containerized-main/k8s/deployment.yml
+- kubectl create -f containerized-main/k8s/service.yml
 - kubectl port-forward svc/containerized-main 7503:7503
 - curl localhost:7503/backoffice/api/v1/backoffice/orders
 
-- kubectl create -f containerized-discovery/k8n/deployment.yml
-- kubectl create -f containerized-discovery/k8n/service.yml
+- kubectl create -f containerized-discovery/k8s/deployment.yml
+- kubectl create -f containerized-discovery/k8s/service.yml
 - kubectl port-forward svc/discovery 8761:8761
 
-- kubectl create -f containerized-gateway/k8n/deployment.yml
-- kubectl create -f containerized-gateway/k8n/service.yml
+- kubectl create -f containerized-gateway/k8s/deployment.yml
+- kubectl create -f containerized-gateway/k8s/service.yml
 - kubectl port-forward svc/gateway 8762:8762
 - curl localhost:8762/backoffice/api/v1/backoffice/orders
 

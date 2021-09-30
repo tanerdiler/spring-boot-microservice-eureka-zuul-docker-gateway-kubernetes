@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gateway
+  name: zipkin
 spec:
   selector:
-    app: k8n-service-gateway
+    app: k8s-service-zipkin
   ports:
     - protocol: TCP
-      port: 8762
-      targetPort: 8762
+      port: 7501
+      targetPort: 7501

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-service-zipkin
+  labels:
+    app: k8s-service-zipkin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-service-zipkin
+  template:
+    metadata:
+      labels:
+        app: k8s-service-zipkin
+    spec:
+      containers:
+        - name: containerized-zipkin
+          image: openzipkin/zipkin
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9411
