@@ -46,6 +46,6 @@ ribbon:
   eureka:
     enabled: true
 
-my:
-  env:
-    type: local
+containerized:
+  app:
+    name: k8s-containerized-accounts.in.configmap.profile.N/A

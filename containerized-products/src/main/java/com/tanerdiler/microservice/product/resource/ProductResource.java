@@ -22,14 +22,18 @@ public class ProductResource {
 
 	private final ProductRepository repository;
 
-	@Value("${my.env.type}")
-	private String myEnvType;
+	@Value("${containerized.app.name}")
+	private String myAppName;
+
+	@GetMapping("/app-name")
+	public String getContainerizedAppName() {
+		return myAppName;
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Product> get(@PathVariable("id") Integer id)
 	{
 		final var product = repository.findById(id).get();
-		log.info("My Env Type : {}", myEnvType);
 		log.info("Product {} detail fetched {}", id, product);
 		return ResponseEntity.ok(product);
 	}
@@ -38,7 +42,6 @@ public class ProductResource {
 	public ResponseEntity<Collection<Product>> getAll()
 	{
 		final var products = repository.findAll().get();
-		log.info("My Env Type : {}", myEnvType);
 		log.info("Executing fetching all products {}", products);
 		return ResponseEntity.ok(products);
 	}

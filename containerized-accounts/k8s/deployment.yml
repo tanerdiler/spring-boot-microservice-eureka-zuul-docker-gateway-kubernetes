@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: k8s-service-accounts
+  namespace: k8s-containerized-services
   labels:
     app: k8s-service-accounts
 spec:
@@ -17,18 +18,18 @@ spec:
       containers:
         - name: containerized-accounts
           image: tanerdiler/service-accounts-api:latest
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           ports:
             - containerPort: 2222
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 180
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 10
+#          livenessProbe:
+#            httpGet:
+#              path: /health
+#              port: 8080
+#              scheme: HTTP
+#            initialDelaySeconds: 180
+#          readinessProbe:
+#            httpGet:
+#              path: /health
+#              port: 8080
+#              scheme: HTTP
+#            initialDelaySeconds: 10

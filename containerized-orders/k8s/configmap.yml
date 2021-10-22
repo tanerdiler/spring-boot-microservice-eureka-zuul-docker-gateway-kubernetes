@@ -1,0 +1,20 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: containerized-orders
+  namespace: k8s-containerized-services
+data:
+  application.properties: |-
+    containerized.app.name=k8s-containerized-orders.in.configmap
+    ---
+    spring:
+      profiles: dev
+    containerized.app.name=k8s-containerized-orders.in.configmap.profile.dev
+    ---
+    spring:
+      profiles: prod
+    containerized.app.name=k8s-containerized-orders.in.configmap.profile.prod
+    ---
+    spring:
+      profiles: kubernetes
+    containerized.app.name=k8s-containerized-orders.in.configmap.profile.kubernetes

@@ -2,10 +2,16 @@ spring:
   cloud:
     kubernetes:
       enabled: true
+      config:
+        name: containerized-accounts
+        namespace: k8s-containerized-services
+        sources:
+          # Spring Cloud Kubernetes looks up a ConfigMap named c1 in namespace default-namespace
+          - name: containerized-accounts
 eureka:
   client:
     enabled: false
 
-my:
-  env:
-    type: kubernetes
+containerized:
+  app:
+    name: k8s-containerized-accounts.in.application-kubernetes_yml.profile.kubernetes

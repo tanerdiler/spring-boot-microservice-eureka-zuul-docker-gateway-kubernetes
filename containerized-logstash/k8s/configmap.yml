@@ -9,4 +9,4 @@ data:
 kind: ConfigMap
 metadata:
   name: logstash
-  namespace: default
+  namespace: k8s-containerized-services

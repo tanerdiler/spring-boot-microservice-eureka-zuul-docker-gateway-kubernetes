@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: k8s-service-logstash
+  namespace: k8s-containerized-services
   labels:
     app: k8s-service-logstash
 spec:

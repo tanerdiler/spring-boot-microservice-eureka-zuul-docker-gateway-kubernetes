@@ -1,13 +1,24 @@
 #!/usr/bin/env sh
 
-mvn clean install
+mvn clean install -DskipTests
 docker build -t tanerdiler/service-accounts-api containerized-accounts/.
 docker build -t tanerdiler/service-products-api containerized-products/.
 docker build -t tanerdiler/service-orders-api containerized-orders/.
 docker build -t tanerdiler/service-main-api containerized-main/.
+docker build -t tanerdiler/service-gateway containerized-gateway/.
+
+kubectl get pods | grep k8s-service | awk '{print $1}' | xargs kubectl delete pod
+
+#kubectl create namespace k8s-containerized-services
+kubectl create -f k8s/namespace.yml
+kubectl config view
+kubectl config set-context dev --namespace=k8s-containerized-services \
+  --cluster= docker-desktop\
+  --user=docker-desktop
 
 
-kubectl create -f containerized-logstash/k8s/configmaps.yml
+
+kubectl create -f containerized-logstash/k8s/configmap.yml
 kubectl create -f containerized-logstash/k8s/deployment.yml
 kubectl create -f containerized-logstash/k8s/service.yml
 
@@ -17,21 +28,25 @@ kubectl create -f containerized-zipkin/k8s/service.yml
 kubectl create -f containerized-discovery/k8s/deployment.yml
 kubectl create -f containerized-discovery/k8s/service.yml
 
+kubectl create -f containerized-accounts/k8s/configmap.yml
 kubectl create -f containerized-accounts/k8s/deployment.yml
 kubectl create -f containerized-accounts/k8s/service.yml
 #kubectl port-forward svc/containerized-accounts 7500:7500
 # curl localhost:7500/account/api/v1/accounts
 
+kubectl create -f containerized-products/k8s/configmap.yml
 kubectl create -f containerized-products/k8s/deployment.yml
 kubectl create -f containerized-products/k8s/service.yml
 #kubectl port-forward svc/containerized-products 7501:7501
 # curl http://localhost:7501/product/api/v1/products
 
+kubectl create -f containerized-orders/k8s/configmap.yml
 kubectl create -f containerized-orders/k8s/deployment.yml
 kubectl create -f containerized-orders/k8s/service.yml
 #kubectl port-forward svc/containerized-orders 7502:7502
 # curl localhost:7502/order/api/v1/orders
 
+kubectl create -f containerized-main/k8s/configmap.yml
 kubectl create -f containerized-main/k8s/deployment.yml
 kubectl create -f containerized-main/k8s/service.yml
 #kubectl port-forward svc/containerized-main 7503:7503

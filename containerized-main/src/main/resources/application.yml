@@ -15,18 +15,10 @@ spring:
     port: ${logstash.service.port:5000}
   zipkin:
     base-url: http://${zipkin.service.host:zipkin}:${zipkin.service.port:9411}
+  main:
+    allow-bean-definition-overriding: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
 
-  metrics:
-    distribution:
-      percentiles-histogram.http.server.requests: false
-      percentiles.http.server.requests: 0.5, 0.9, 0.95, 0.99, 0.999
-      sla.http.server.requests: 500ms, 2000ms
 
 eureka:
   instance:
@@ -41,6 +33,6 @@ ribbon:
   eureka:
     enabled: true
 
-my:
-  env:
-    type: local
+containerized:
+  app:
+    name: k8s-containerized-main.in.configmap.profile.N/A

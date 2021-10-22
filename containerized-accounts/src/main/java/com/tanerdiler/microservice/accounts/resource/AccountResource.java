@@ -23,14 +23,18 @@ public class AccountResource
 {
 	private final AccountRepository repository;
 
-	@Value("${my.env.type}")
-	private String myEnvType;
+	@Value("${containerized.app.name}")
+	private String myAppName;
+
+	@GetMapping("/app-name")
+	public String getContainerizedAppName() {
+		return myAppName;
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Account> get(@PathVariable("id") Integer id)
 	{
 		final var account = repository.findById(id).get();
-		log.info("My Env Type : {}", myEnvType);
 		log.info("Account {} detail fetched {}", id, account);
 		return ResponseEntity.ok(account);
 	}
@@ -42,4 +46,5 @@ public class AccountResource
 		log.info("Executing fetching all accounts {}", accounts);
 		return ResponseEntity.ok(accounts);
 	}
+
 }

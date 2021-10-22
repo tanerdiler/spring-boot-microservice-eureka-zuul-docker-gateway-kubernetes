@@ -6,6 +6,6 @@ eureka:
   client:
     enabled: false
 
-my:
-  env:
-    type: kubernetes
+containerized:
+  app:
+    name: k8s-containerized-products.in.application-kubernetes_yml.profile.kubernetes

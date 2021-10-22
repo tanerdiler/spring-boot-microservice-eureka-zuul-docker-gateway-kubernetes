@@ -1,7 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gateway
+  name: containerized-gateway
+  namespace: k8s-containerized-services
 spec:
   selector:
     app: k8s-service-gateway

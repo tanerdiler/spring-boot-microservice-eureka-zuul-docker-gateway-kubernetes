@@ -1,5 +1,6 @@
 package com.tanerdiler.microservice.main.resource;
 
+import static java.time.ZoneOffset.UTC;
 import com.tanerdiler.microservice.main.dto.OrderDTO;
 import com.tanerdiler.microservice.main.model.Account;
 import com.tanerdiler.microservice.main.model.Order;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,20 +39,23 @@ public class BackofficeController
 
 		log.warn("Fetching all orders...");
 		List<Order> orders = orderService.findAll();
+		log.info("Fetched Orders : {}", orders);
 		Map<Integer, Account> accounts = new HashMap<>();
 		Map<Integer, Product> products = new HashMap<>();
-
-		log.warn("Fetching accounts of orders...");
-		orders.stream()
-				.filter(o->!accounts.containsKey(o.getAccountId()))
-				.map(o->accountService.findById(o.getAccountId()))
-				.forEach(a->accounts.put(a.getId(), a));
 
 		log.warn("Fetching products of orders...");
 		orders.stream()
 				.filter(o->!products.containsKey(o.getProductId()))
 				.map(o->productService.findById(o.getProductId()))
 				.forEach(a->products.put(a.getId(), a));
+		log.info("Fetched products : {}", products);
+
+		log.warn("Fetching accounts of orders...");
+		orders.stream()
+				.filter(o->!accounts.containsKey(o.getAccountId()))
+				.map(o->accountService.findById(o.getAccountId()))
+				.forEach(a->accounts.put(a.getId(), a));
+		log.info("Fetched accounts : {}", accounts);
 
 		log.warn("Generating composite of orders...");
 		List<OrderDTO> orderDTOList = new ArrayList<>();

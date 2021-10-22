@@ -5,10 +5,14 @@ spring:
         all-namespaces: true
       enabled: true
 
+    loadbalancer:
+      ribbon:
+        enabled: false
+
 eureka:
   client:
     enabled: false
 
-my:
-  env:
-    type: kubernetes
+containerized:
+  app:
+    name: k8s-containerized-main.in.application-kubernetes_yml.profile.kubernetes
