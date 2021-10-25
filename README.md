@@ -1,8 +1,21 @@
-# SPRING BOOT MICROCSERVICE USING SPRING CLOUD, EUREKA, RIBBON, ZUUL, ZIPKIN, SLEUTH
+# SPRING BOOT MICROCSERVICE USING SPRING CLOUD, EUREKA, RIBBON, ZUUL, ZIPKIN, SLEUTH, KUBERNETES
 
-This project is created to get experience on **Microservices With Netflix OSS**. This is a simple project by coded imperative programming with simple business requirements.
+This project is created to get experience on **Microservices With Netflix OSS** and also **Microserviecs On Kubernetes**.
+This is a simple project by coded imperative programming with simple business requirements.
 
 ELK Stack has been integrated for monitoring since version 1.1.0.
+
+Pay Attention please. Please follow the tags on the master branch to get most accurate environment for you. I had started 
+to get implement Microservices Patterns by implementing Netflix OSS then the Spring BOOT has decided to implement many
+Microservice Patterns' self. I'm motivated to update this repository to new versions of Spring Boot and
+to achieve new goals like to use Kubernetes.
+
+To manage the environments is getting a little harder. This repository should support both kubernetes and non-kubernetes
+solution in my opinion. With last merging, we can lose the support to non-kubernetes solution. Please, do not hesitate to
+open an issue if you've met any error.
+
+My next goals are to implement Istio Mesh and then implement CD pipeline. So I would be appreciated if you give a hand on
+this repository. 
 
 ## There are four microservices:
 
@@ -20,11 +33,16 @@ microservices via **Feign**.
 | ------------- | -----------------------------| :-----: | :-----:| ------------------------------------------------ |
 | Accounts      | /api/v1/accounts/{id}        | 7500    | GET    | Return detail of specified account               |
 | Accounts      | /api/v1/accounts             | 7500    | GET    | Return details of all acounts                    |
+| Accounts      | /api/v1/accounts/app-name    | 7500    | GET    | Return app-name specific to profile and env      |
 | Products      | /api/v1/products/{id}        | 7501    | GET    | Return detail of specified product               |
 | Products      | /api/v1/products             | 7501    | GET    | Return details of all products                   |
+| Products      | /api/v1/products/app-name    | 7501    | GET    | Return app-name specific to profile and env      |
 | Orders        | /api/v1/orders/{id}          | 7502    | GET    | Return detail of order                           |
 | Orders        | /api/v1/orders               | 7502    | GET    | Return details of orders                         |
+| Orders        | /api/v1/orders/app-name      | 7501    | GET    | Return app-name specific to profile and env      |
 | Backoffice    | /api/v1/backoffice/orders    | 7503    | GET    | Return orders with product name and account name |
+
+Note: /app-name has been added on the last merge. The main goal on adding kind of this endpoint is to be 
 
 ### Gateways ###
 
@@ -113,9 +131,19 @@ In docker-compose.yml file:
 
 ## VERSIONS
 
-### 1.3.1
+### 2.5.0
+
+- Support Kubernetes ConfigMap fetching
+- Add /app-name endpoints to see where the configuration has been taken from
+- Fully integrating Spring Boot with Kubernetes for Discovery, Loadbalancer, Gateway patterns
+- kubernetes.sh to sort how to deploy microservices into Kubernetes
+- All services are being deployed under same namespace k8s-containerized-services
+
+
+### 2.0.0
 
 - Add kubernetes yaml files (still using Eureka discovery)
+- Still using Netflix OSS
 
 ### 1.3.0
 - Update Spring Boot version to 2.5.1
