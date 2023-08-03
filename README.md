@@ -113,7 +113,7 @@ In docker-compose.yml file:
 
 ## VERSIONS
 
-### 1.3.1
+### 2.0.0
 
 - Add kubernetes yaml files (still using Eureka discovery)
 
