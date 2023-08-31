@@ -31,8 +31,7 @@
 
     <appender name="LOGSTASH_TCP" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <param name="Encoding" value="UTF-8"/>
-        <remoteHost>${logstash-server}</remoteHost>
-        <port>${logstash-port}</port>
+        <destination>${logstash-server:- }:${logstash-port:- }</destination>
         <!-- encoder is required -->
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
