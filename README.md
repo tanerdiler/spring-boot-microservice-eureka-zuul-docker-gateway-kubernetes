@@ -113,6 +113,12 @@ In docker-compose.yml file:
 
 ## VERSIONS
 
+### 2.0.1
+
+- Update Spring-Boot version to 3.2.1
+- Start to use micrometer tracing
+- Zipkin will be replaced by Grafana
+
 ### 2.0.0
 
 - Add kubernetes yaml files (still using Eureka discovery)

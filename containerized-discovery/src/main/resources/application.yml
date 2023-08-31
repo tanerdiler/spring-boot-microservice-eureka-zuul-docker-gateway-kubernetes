@@ -16,6 +16,9 @@ spring:
     port: 5000
   zipkin:
     base-url: ${ZIPKIN_URL:http://zipkin:9411}/
+  sleuth:
+    traceId128: true
+    supportsJoin: false
 
 management:
   endpoints:
