@@ -6,35 +6,33 @@ server:
 spring:
   application:
     name: containerized-accounts
-  logging:
-    pattern:
-      level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
-      console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{traceId:-},%X{spanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
-    level:
-      org.springframework: WARN
-      org.hibernate: WARN
   logstash:
     server: logstash
     port: 5000
-  zipkin:
-    base-url: ${ZIPKIN_URL:http://zipkin:9411}/
   sleuth:
     traceId128: true
     supportsJoin: false
+
 management:
-  zipkin:
-    tracing:
-      endpoint: ${ZIPKIN_URL:http://zipkin:9411}/api/v2/spans
   endpoints:
     web:
       exposure:
-        include: "*"
-
+        include: prometheus
   metrics:
+    tags:
+      application: app
     distribution:
-      percentiles-histogram.http.server.requests: false
-      percentiles.http.server.requests: 0.5, 0.9, 0.95, 0.99, 0.999
-      sla.http.server.requests: 500ms, 2000ms
+      percentiles-histogram:
+        http:
+          server:
+            requests: 'true'
+logging:
+  pattern:
+    level: "trace_id=%X{traceId:-} span_id=%X{spanId:-} trace_flags=%X{trace_flags} %p"
+  level:
+    com.tanerdiler.microservice.accounts: DEBUG
+    org.springframework: WARN
+    org.hibernate: WARN
 
 eureka:
   instance:
