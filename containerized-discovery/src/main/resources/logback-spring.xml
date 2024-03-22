@@ -29,13 +29,6 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>
     </appender>
 
-    <appender name="LOGSTASH_TCP" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <param name="Encoding" value="UTF-8"/>
-        <destination>${logstash-server:- }:${logstash-port:- }</destination>
-        <!-- encoder is required -->
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-    </appender>
-
     <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="FILE"/>
     </appender>
@@ -45,7 +38,6 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="ASYNC_LOGSTASH_TCP" />
         <appender-ref ref="CONSOLE" />
     </root>
 </configuration>

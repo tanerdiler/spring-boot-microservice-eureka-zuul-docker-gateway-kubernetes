@@ -64,6 +64,14 @@ Open kibana with http://localhost:5601/. You must define an index pattern (taner
 
 ![Kibana](https://github.com/tanerdiler/spring-boot-microservice-eureka-zuul-docker/blob/master/assets/kibana-1.png)
 
+## Used Grafana
+
+You can open Grafana : http://localhost:3000/
+Predefined dashboard : http://localhost:3000/d/dLsDQIUnzb/spring-boot-observability?orgId=1&refresh=5s
+
+Grafana has loki for log aggregation and tempo for distributed tracing backend.
+
+
 ## Build & Run
 
 - *>mvn clean package* : to build
@@ -113,6 +121,26 @@ In docker-compose.yml file:
 
 ## VERSIONS
 
+### 2.0.2
+- feign-micrometer dependency and Capability bean added to send trace-id on resttemplate calls
+
+        @Bean
+        public Capability capability(final MeterRegistry registry) {
+          return new MicrometerCapability(registry);
+        }
+  
+		<dependency>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-micrometer</artifactId>
+		</dependency>
+- micrometer-tracing-bridge-brave added to generate trace-id and span-id
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+- Integrate Grafana OSS : Grafana, Loki, Tempo
+
 ### 2.0.1
 
 - Update Spring-Boot version to 3.2.1
@@ -148,3 +176,7 @@ In docker-compose.yml file:
 
 - Spring-Boot 2.0.2.RELEASE
 - Java 8
+
+## RESOURCES
+
+- ![RestTemplate & Micrometer & OpenFeign (https://www.appsdeveloperblog.com/micrometer-and-zipkin-in-spring-boot/#google_vignette)]

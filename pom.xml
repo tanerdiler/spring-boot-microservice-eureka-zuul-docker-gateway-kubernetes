@@ -30,7 +30,6 @@
 
 	<modules>
 		<module>containerized-gateway</module>
-
 		<module>containerized-discovery</module>
 		<module>containerized-accounts</module>
 		<module>containerized-products</module>

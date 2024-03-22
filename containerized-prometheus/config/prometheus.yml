@@ -1,37 +1,47 @@
-#global config
 global:
-  scrape_interval:     15s
-  evaluation_interval: 5s
-  scrape_timeout:     15s
-  #query_log_file: <string>
-  external_labels:
-    monitor: 'codelab-monitor'
-# Scrape configs only contain one scrape target
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
 scrape_configs:
   - job_name: 'main'
     # Override the global default and scrape targets from this job every 5 seconds.
-    metrics_path: '/actuator/prometheus'
+    metrics_path: '/backoffice/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: ['main:2222']
+      - targets: ['service-main:2222']
   - job_name: 'accounts'
     # Override the global default and scrape targets from this job every 5 seconds.
-    metrics_path: '/actuator/prometheus'
+    metrics_path: '/account/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: ['accounts:2222']
+      - targets: ['service-accounts:2222']
   - job_name: 'products'
     # Override the global default and scrape targets from this job every 5 seconds.
-    metrics_path: '/actuator/prometheus'
+    metrics_path: '/product/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: ['products:2222']
+      - targets: ['service-products:2222']
   - job_name: 'orders'
     # Override the global default and scrape targets from this job every 5 seconds.
-    metrics_path: '/actuator/prometheus'
+    metrics_path: '/order/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: ['orders:2222']
+      - targets: ['service-orders:2222']
   - job_name: 'discovery'
     # Override the global default and scrape targets from this job every 5 seconds.
     metrics_path: '/actuator/prometheus'

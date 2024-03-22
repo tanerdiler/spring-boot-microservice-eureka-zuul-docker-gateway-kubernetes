@@ -1,4 +1,15 @@
-version: '3'
+x-logging: &default-logging
+  driver: loki
+  options:
+    loki-url: 'http://localhost:3100/api/prom/push'
+    loki-pipeline-stages: |
+      - multiline:
+          firstline: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}'
+          max_wait_time: 3s
+      - regex:
+          expression: '^(?P<date>\d{4}-\d{2}-\d{2}) (?P<time>\d{2}:\d{2}:\d{2}.\d{3}) (?P<message>(?s:.*))$$'
+
+version: '3.4'
 services:
 
   elasticsearch:
@@ -40,12 +51,6 @@ services:
     depends_on:
       - elasticsearch
 
-  zipkin:
-    image: openzipkin/zipkin
-    container_name: service-zipkin
-    ports:
-      - 9411:9411
-
   logstash:
     image: docker.elastic.co/logstash/logstash:7.8.0
     container_name: service-logstash
@@ -60,19 +65,12 @@ services:
     depends_on:
       - elasticsearch
 
-  discovery:
-    image: tanerdiler/service-discovery
-    container_name: service-discovery
-    build:
-      context: ./containerized-discovery
-      dockerfile: Dockerfile
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: service-zipkin
     ports:
-      - "8761:8761"
-    depends_on:
-      - logstash
-    links:
-      - logstash
-
+      - 9411:9411
+    command: --logging.level.zipkin2=TRACE
 #   cassandra-node-1:
 #     hostname: cassandra-1
 #     image: cassandra:latest
@@ -95,103 +93,180 @@ services:
 #      - 7199
 #      - 9042
 #      - 9160
-  gateway:
-    image: tanerdiler/service-gateway
-    container_name: service-gateway
+
+  loki:
+    image: grafana/loki:2.8.2
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./containerized-prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml:rw
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --enable-feature=exemplar-storage
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  tempo:
+    image: grafana/tempo:2.1.1
+    container_name: tempo
+    command: [ "--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--auth.enabled=false" ]
+    ports:
+      - "14250:14250"
+      - "4317:4317"
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  grafana:
+    image: grafana/grafana:9.4.13
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./containerized-grafana/etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./containerized-grafana/etc/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./containerized-grafana/etc/dashboards:/etc/grafana/dashboards
+    depends_on:
+      - loki
+      - prometheus
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+    logging: *default-logging
+
+
+  discovery:
+    image: tanerdiler/service-discovery
+    container_name: service-discovery
     build:
-      context: ./containerized-gateway
+      context: ./containerized-discovery
       dockerfile: Dockerfile
     ports:
-      - "8762:8762"
-    links:
-      - discovery
+      - "8761:8761"
+    depends_on:
       - logstash
-      - zipkin
+    links:
+      - logstash
+    logging: *default-logging
 
-  accounts:
+  service-accounts:
     image: tanerdiler/service-accounts-api
     container_name: service-accounts
     build:
       context: ./containerized-accounts
       dockerfile: Dockerfile
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=service-accounts,compose_service=service-accounts
+      - OTEL_METRICS_EXPORTER=none
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=service-accounts
+      - management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
+      - management.tracing.sampling.probability=1.0
     ports:
       - "7500:2222"
     links:
       - discovery
       - logstash
-      - zipkin
+    logging: *default-logging
 
-  products:
+  service-products:
     image: tanerdiler/service-products-api
     container_name: service-products
     build:
       context: ./containerized-products
       dockerfile: Dockerfile
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=service-products,compose_service=service-products
+      - OTEL_METRICS_EXPORTER=none
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=service-products
+      - management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
+      - management.tracing.sampling.probability=1.0
     ports:
       - "7501:2222"
     depends_on:
       - discovery
-      - accounts
+      - service-accounts
     links:
       - discovery
       - logstash
-      - zipkin
+    logging: *default-logging
 
-  orders:
+  service-orders:
     image: tanerdiler/service-orders-api
     container_name: service-orders
     build:
       context: ./containerized-orders
       dockerfile: Dockerfile
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=service-orders,compose_service=service-orders
+      - OTEL_METRICS_EXPORTER=none
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=service-orders
+      - management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
+      - management.tracing.sampling.probability=1.0
     ports:
       - "7502:2222"
     depends_on:
       - discovery
-      - products
+      - service-products
     links:
       - discovery
       - logstash
-      - zipkin
+    logging: *default-logging
 
-  main:
+  service-main:
     image: tanerdiler/service-main-api
     container_name: service-main
     build:
       context: ./containerized-main
       dockerfile: Dockerfile
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=service-main,compose_service=service-main
+      - OTEL_METRICS_EXPORTER=none
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=service-main
+      - management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
+      - management.tracing.sampling.probability=1.0
     ports:
       - "7503:2222"
     depends_on:
       - discovery
-      - orders
+      - service-orders
     links:
       - discovery
       - logstash
-      - accounts
-      - products
-      - orders
-      - zipkin
+      - service-accounts
+      - service-products
+      - service-orders
+    logging: *default-logging
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
+  service-gateway:
+    image: tanerdiler/service-gateway
+    container_name: service-gateway
+    build:
+      context: ./containerized-gateway
+      dockerfile: Dockerfile
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=service-gateway,compose_service=service-gateway
+      - OTEL_METRICS_EXPORTER=none
+      - MANAGEMENT_METRICS_TAGS_APPLICATION=service-gateway
     ports:
-      - 9090:9090
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-    volumes:
-      - ./containerized-prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - "8762:8762"
     links:
       - discovery
-      - gateway
-      - accounts
-      - products
-      - orders
-      - main
+      - logstash
+    logging: *default-logging
 
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - 3000:3000
-    user: "104"
+
